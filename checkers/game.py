@@ -1,11 +1,12 @@
 import pygame
-from .constants import DARK_GRAY, WHITE, BLUE, SQUARE_SIZE
+
 from checkers.board import Board
+from checkers.constants import BLACK, WHITE, BLUE, SQUARE_SIZE, CAPTION
 
 
 class Game:
+
     def __init__(self, win):
-        self.selected = None
         self.turn = None
         self.valid_moves = None
         self._init()
@@ -19,52 +20,66 @@ class Game:
     def _init(self):
         self.selected = None
         self.board = Board()
-        self.turn = DARK_GRAY
+        self.turn = BLACK
         self.valid_moves = {}
-
-    def winner(self):
-        return self.board.winner()
 
     def reset(self):
         self._init()
 
     def select(self, row, col):
-        if self.selected:
+        if self.board.selected_piece:
             result = self._move(row, col)
             if not result:
-                self.selected = None
-                self.select(row, col)
+                # self.selected.set_selected(False)
+                # self.selected = None
+                self.board.selected_piece.set_selected(False)
+                self.board.set_selected_piece(None)
+                self.valid_moves = {}
+                # self.select(row, col)
 
         piece = self.board.get_piece(row, col)
         if piece != 0 and piece.color == self.turn:
-            self.selected = piece
+            # piece.set_selected(True)
+            # self.selected = piece
+            piece.set_selected(True)
+            self.board.set_selected_piece(piece)
             self.valid_moves = self.board.get_valid_moves(piece)
             return True
 
         return False
 
     def _move(self, row, col):
-        piece = self.board.get_piece(row, col)
-        if self.selected and piece == 0 and (row, col) in self.valid_moves:
-            self.board.move(self.selected, row, col)
+        # piece = self.board.get_piece(row, col)
+        piece = self.board.get_selected_piece()
+        if self.board.get_piece(row, col) == 0 and (row, col) in self.valid_moves:
+            self.board.move(piece, row, col)
             skipped = self.valid_moves[(row, col)]
             if skipped:
                 self.board.remove(skipped)
             self.change_turn()
         else:
             return False
-
         return True
+
+    def change_turn(self):
+        self.valid_moves = {}
+        # self.selected = None
+        if self.turn == BLACK:
+            self.turn = WHITE
+            color = "White"
+        else:
+            self.turn = BLACK
+            color = "Black"
+
+        caption = CAPTION % color
+        pygame.display.set_caption(caption)
 
     def draw_valid_moves(self, moves):
         for move in moves:
             row, col = move
-            pygame.draw.circle(self.win, BLUE,
-                               (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), 15)
+            pygame.draw.circle(self.win, BLUE, (col * SQUARE_SIZE + SQUARE_SIZE // 2,
+                                                row * SQUARE_SIZE + SQUARE_SIZE // 2),
+                               SQUARE_SIZE // 5)
 
-    def change_turn(self):
-        self.valid_moves = {}
-        if self.turn == DARK_GRAY:
-            self.turn = WHITE
-        else:
-            self.turn = DARK_GRAY
+    def winner(self):
+        return self.board.winner()

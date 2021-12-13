@@ -1,15 +1,21 @@
 import pygame
 
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 400, 400
 ROWS, COLS = 8, 8
 SQUARE_SIZE = WIDTH // COLS
 
-# rgb
-DARK_GRAY = (92, 92, 92)
-LIGHT_GRAY = (192, 192, 192)
-WHITE = (255, 255, 255)
+# RGB
 BLACK = (0, 0, 0)
-BLUE = (192, 192, 255)
-GREY = (128, 128, 128)
+WHITE = (255, 255, 255)
+DARK_GRAY = (64, 64, 64)
+LIGHT_GRAY = (192, 192, 195)
+BLUE = (64, 64, 255)
+GREEN = (0, 255, 0)
 
-CROWN = pygame.transform.scale(pygame.image.load('checkers/assets/crown.png'), (44, 25))
+CROWN = pygame.transform.scale(pygame.image.load('checkers/assets/crown.png'), (SQUARE_SIZE//3, SQUARE_SIZE//4))
+
+# Отслеживание направления доски
+DOWN = 1
+UP = -1
+
+CAPTION = "py-Checkers: It's %s player's turn"

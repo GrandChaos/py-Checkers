@@ -1,12 +1,13 @@
+import sys
 import pygame
-from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, DARK_GRAY
+
+from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, CAPTION
 from checkers.game import Game
-#from minimax.algorithm import minimax
 
 FPS = 60
 
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption('Checkers')
+pygame.display.set_caption(CAPTION % "Black")
 
 
 def get_row_col_from_mouse(pos):
@@ -25,12 +26,13 @@ def main():
         clock.tick(FPS)
 
         if game.winner() is not None:
-            print(game.winner())
+            print(f'Game winner: {game.winner()}')
             run = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                run = False
+                pygame.quit()
+                sys.exit()
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
@@ -38,8 +40,5 @@ def main():
                 game.select(row, col)
 
         game.update()
-
-    pygame.quit()
-
 
 main()

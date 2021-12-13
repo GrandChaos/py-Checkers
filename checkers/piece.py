@@ -1,15 +1,19 @@
-from .constants import DARK_GRAY, WHITE, SQUARE_SIZE, GREY, CROWN
 import pygame
 
+from .constants import SQUARE_SIZE, CROWN, GREEN, BLUE
+
+
 class Piece:
-    PADDING = 15
-    OUTLINE = 2
+    PADDING = SQUARE_SIZE * 0.20  # % от размера квадрата
+    OUTLINE = 3
 
     def __init__(self, row, col, color):
         self.row = row
         self.col = col
         self.color = color
         self.king = False
+        self.selected = False
+
         self.x = 0
         self.y = 0
         self.calc_pos()
@@ -20,18 +24,25 @@ class Piece:
 
     def make_king(self):
         self.king = True
-    
+
+    def set_selected(self, selected):
+        self.selected = selected
+
     def draw(self, win):
-        radius = SQUARE_SIZE//2 - self.PADDING
-        pygame.draw.circle(win, GREY, (self.x, self.y), radius + self.OUTLINE)
+        radius = SQUARE_SIZE // 2 - self.PADDING
+        if not self.selected:
+            pygame.draw.circle(win, BLUE, (self.x, self.y), radius + self.OUTLINE)
+        else:
+            pygame.draw.circle(win, GREEN, (self.x, self.y), radius + self.OUTLINE)
         pygame.draw.circle(win, self.color, (self.x, self.y), radius)
         if self.king:
-            win.blit(CROWN, (self.x - CROWN.get_width()//2, self.y - CROWN.get_height()//2))
+            win.blit(CROWN, (self.x - CROWN.get_width()//2,
+                             self.y - CROWN.get_height()//2))
 
     def move(self, row, col):
         self.row = row
         self.col = col
         self.calc_pos()
 
-    def __repr__(self):
+    def __repr__(self):  # Representation
         return str(self.color)
