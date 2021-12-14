@@ -7,8 +7,6 @@ from checkers.constants import BLACK, WHITE, BLUE, SQUARE_SIZE, CAPTION
 class Game:
 
     def __init__(self, win):
-        self.turn = None
-        self.valid_moves = None
         self._init()
         self.win = win
 
@@ -27,7 +25,7 @@ class Game:
         self._init()
 
     def select(self, row, col):
-        if self.board.selected_piece:
+        if self.board.selected_piece is not None:
             result = self._move(row, col)
             if not result:
                 # self.selected.set_selected(False)

@@ -32,16 +32,15 @@ def main():
         if AI and game.turn == WHITE:
             value, new_board = minimax(game.get_board(), depth, WHITE, game)
             game.AI_move(new_board)
-            pygame.time.delay(500)
+            # pygame.time.delay(500)
 
-        if game.winner() is not None:
+        if game.winner() != None:
             print(f'Game winner: {game.winner()}')
             run = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+                run = False
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
@@ -49,6 +48,8 @@ def main():
                 game.select(row, col)
 
         game.update()
+
+    pygame.quit()
 
 
 main()

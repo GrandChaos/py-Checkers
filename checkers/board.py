@@ -82,8 +82,7 @@ class Board:
         moves = {}
         last = []
         for r in range(start, stop, step):
-            # проверить доску или вернуться к тому, с чего начали
-            if left < 0 or (r == self.selected_piece.row and left == self.selected_piece.col):
+            if left < 0:
                 break
             current = self.board[r][left]
             if current == 0:  # пустой квадрат
@@ -92,8 +91,7 @@ class Board:
                 elif skipped:
                     moves[(r, left)] = last + skipped
                 else:
-                    moves[(
-                        r, left)] = last  # отслеживание последней прыгнутой фигуры в текущем новом действующем квадрате
+                    moves[(r, left)] = last  # отслеживание последней прыгнутой фигуры в текущем новом действующем квадрате
 
                 if last:  # Мы просто прыгнули на фишку соперника перед тем, как приземлиться на правильное поле?
                     # Проверить правильные ходы из текущего действительного поля
@@ -138,8 +136,7 @@ class Board:
         moves = {}
         last = []
         for r in range(start, stop, step):
-            # проверить доску или вернуться к тому, с чего начали
-            if right >= COLS or (r == self.selected_piece.row and right == self.selected_piece.col):
+            if right >= COLS:
                 break
             current = self.board[r][right]
             if current == 0:  # пустой квадрат
@@ -194,16 +191,19 @@ class Board:
             if piece != 0:
                 if piece.color == BLACK:
                     self.black_remaining -= 1
+                    if piece.king:
+                        self.black_kings -= 1
                 else:
                     self.white_remaining -= 1
+                    if piece.king:
+                        self.white_kings -= 1
 
     def winner(self):
         if self.black_remaining <= 0:
             return WHITE
         elif self.white_remaining <= 0:
             return BLACK
-        else:
-            return None
+        return None
 
     def set_selected_piece(self, piece):
         self.selected_piece = piece
@@ -212,8 +212,10 @@ class Board:
         return self.selected_piece
 
     def evaluate(self):
-        print(self.white_remaining - self.black_remaining +
-              (self.white_kings * 0.25 - self.black_kings * 0.25))
+        if self.white_remaining <= 0:
+            return float('-inf')
+        if self.black_remaining <= 0:
+            return float('inf')
         return self.white_remaining - self.black_remaining + \
                (self.white_kings * 0.25 - self.black_kings * 0.25)
 
