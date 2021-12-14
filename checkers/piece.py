@@ -5,7 +5,7 @@ from .constants import SQUARE_SIZE, CROWN, GREEN, BLUE
 
 class Piece:
     PADDING = SQUARE_SIZE * 0.20  # % от размера квадрата
-    OUTLINE = 3
+    OUTLINE = 2
 
     def __init__(self, row, col, color):
         self.row = row

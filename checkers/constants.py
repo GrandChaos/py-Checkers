@@ -9,10 +9,10 @@ BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 DARK_GRAY = (64, 64, 64)
 LIGHT_GRAY = (192, 192, 195)
-BLUE = (64, 64, 255)
+BLUE = (48, 48, 255)
 GREEN = (0, 255, 0)
 
-CROWN = pygame.transform.scale(pygame.image.load('checkers/assets/crown.png'), (SQUARE_SIZE//3, SQUARE_SIZE//4))
+CROWN = pygame.transform.scale(pygame.image.load('assets/crown.png'), (SQUARE_SIZE//3, SQUARE_SIZE//4))
 
 # Отслеживание направления доски
 DOWN = 1

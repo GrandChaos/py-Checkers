@@ -16,8 +16,8 @@ def draw_squares(win):
 class Board:
     def __init__(self):
         self.board = []
-        self.red_remaining = self.white_remaining = 12
-        self.red_kings = self.white_kings = 0
+        self.black_remaining = self.white_remaining = 12
+        self.black_kings = self.white_kings = 0
         self.selected_piece = None
         self.create_board()
 
@@ -27,12 +27,12 @@ class Board:
         piece.move(row, col)
         piece.set_selected(False)
 
-        if row == ROWS - 1 or row == 0:
+        if (row == ROWS - 1 or row == 0) and not piece.king:
             piece.make_king()
             if piece.color == WHITE:
                 self.white_kings += 1
             else:
-                self.red_kings += 1
+                self.black_kings += 1
 
     def get_piece(self, row, col):
         return self.board[row][col]
@@ -66,15 +66,15 @@ class Board:
         row = piece.row
 
         if piece.color == BLACK or piece.king:  # Проверить вверх
-            moves.update(self._traverse_left(row-1, max(row-3, -1), UP,
+            moves.update(self._traverse_left(row - 1, max(row - 3, -1), UP,
                                              piece.color, left))
-            moves.update(self._traverse_right(row-1, max(row-3, -1), UP,
+            moves.update(self._traverse_right(row - 1, max(row - 3, -1), UP,
                                               piece.color, right))
 
-        if piece.color == WHITE or piece.king: # Проверить вниз
-            moves.update(self._traverse_left(row+1, min(row+3, ROWS), DOWN,
+        if piece.color == WHITE or piece.king:  # Проверить вниз
+            moves.update(self._traverse_left(row + 1, min(row + 3, ROWS), DOWN,
                                              piece.color, left))
-            moves.update(self._traverse_right(row+1, min(row+3, ROWS), DOWN,
+            moves.update(self._traverse_right(row + 1, min(row + 3, ROWS), DOWN,
                                               piece.color, right))
         return moves
 
@@ -92,7 +92,8 @@ class Board:
                 elif skipped:
                     moves[(r, left)] = last + skipped
                 else:
-                    moves[(r, left)] = last  # отслеживание последней прыгнутой фигуры в текущем новом действующем квадрате
+                    moves[(
+                        r, left)] = last  # отслеживание последней прыгнутой фигуры в текущем новом действующем квадрате
 
                 if last:  # Мы просто прыгнули на фишку соперника перед тем, как приземлиться на правильное поле?
                     # Проверить правильные ходы из текущего действительного поля
@@ -107,22 +108,22 @@ class Board:
                             step = UP
                             row = max(r - 3, -1)
 
-                        if not (r+step == last_row and left - 1 == last_col):
-                            moves.update(self._traverse_left(r+step, row, step,
-                                                             color, left-1, skipped=moves[(r, left)]))
+                        if not (r + step == last_row and left - 1 == last_col):
+                            moves.update(self._traverse_left(r + step, row, step,
+                                                             color, left - 1, skipped=moves[(r, left)]))
                         if not (r + step == last_row and left + 1 == last_col):
-                            moves.update(self._traverse_right(r+step, row, step,
-                                                              color, left+1, skipped=moves[(r, left)]))
+                            moves.update(self._traverse_right(r + step, row, step,
+                                                              color, left + 1, skipped=moves[(r, left)]))
                         step = DOWN if step == UP else UP  # Вернуться к исходному направлению
 
                     if step == UP:
-                        row = max(r-3, -1)
+                        row = max(r - 3, -1)
                     else:
-                        row = min(r+3, ROWS)
-                    moves.update(self._traverse_left(r+step, row, step,
-                                                     color, left-1, skipped=last))
-                    moves.update(self._traverse_right(r+step, row, step,
-                                                      color, left+1, skipped=last))
+                        row = min(r + 3, ROWS)
+                    moves.update(self._traverse_left(r + step, row, step,
+                                                     color, left - 1, skipped=last))
+                    moves.update(self._traverse_right(r + step, row, step,
+                                                      color, left + 1, skipped=last))
                 break
 
             elif current.color == color:
@@ -149,7 +150,7 @@ class Board:
                 else:
                     moves[(r, right)] = last
 
-                if last:  #  Мы просто прыгнули на фишку соперника перед тем, как приземлиться на правильное поле?
+                if last:  # Мы просто прыгнули на фишку соперника перед тем, как приземлиться на правильное поле?
                     # Проверить правильные ходы из текущего действительного поля
                     # если выбранная фигура является дамкой, проверить противоположное направление на предмет дополнительных допустимых ходовs
                     if self.selected_piece.king:
@@ -162,27 +163,27 @@ class Board:
                             step = UP
                             row = max(r - 3, -1)
 
-                        if not (r+step == last_row and right - 1 == last_col):
-                            moves.update(self._traverse_left(r+step, row, step,
-                                                             color, right-1, skipped=moves[(r, right)]))
+                        if not (r + step == last_row and right - 1 == last_col):
+                            moves.update(self._traverse_left(r + step, row, step,
+                                                             color, right - 1, skipped=moves[(r, right)]))
                         if not (r + step == last_row and right + 1 == last_col):
-                            moves.update(self._traverse_right(r+step, row, step,
-                                                              color, right+1, skipped=moves[(r, right)]))
+                            moves.update(self._traverse_right(r + step, row, step,
+                                                              color, right + 1, skipped=moves[(r, right)]))
                         step = DOWN if step == UP else UP  # Вернуться к исходному направлению
 
                     if step == UP:
                         row = max(r - 3, -1)
                     else:
                         row = min(r + 3, ROWS)
-                    moves.update(self._traverse_left(r+step, row, step,
-                                                     color, right-1, skipped=last))
-                    moves.update(self._traverse_right(r+step, row, step,
-                                                      color, right+1, skipped=last))  # row-1
+                    moves.update(self._traverse_left(r + step, row, step,
+                                                     color, right - 1, skipped=last))
+                    moves.update(self._traverse_right(r + step, row, step,
+                                                      color, right + 1, skipped=last))  # row-1
                 break
             elif current.color == color:
                 break
             else:
-                last = [current] # прыгаем на фишку соперника
+                last = [current]  # прыгаем на фишку соперника
 
             right += 1
         return moves
@@ -192,12 +193,12 @@ class Board:
             self.board[piece.row][piece.col] = 0
             if piece != 0:
                 if piece.color == BLACK:
-                    self.red_remaining -= 1
+                    self.black_remaining -= 1
                 else:
                     self.white_remaining -= 1
 
     def winner(self):
-        if self.red_remaining <= 0:
+        if self.black_remaining <= 0:
             return WHITE
         elif self.white_remaining <= 0:
             return BLACK
@@ -209,3 +210,17 @@ class Board:
 
     def get_selected_piece(self):
         return self.selected_piece
+
+    def evaluate(self):
+        print(self.white_remaining - self.black_remaining +
+              (self.white_kings * 0.25 - self.black_kings * 0.25))
+        return self.white_remaining - self.black_remaining + \
+               (self.white_kings * 0.25 - self.black_kings * 0.25)
+
+    def get_all_pieces(self, color):
+        pieces = []
+        for row in self.board:
+            for piece in row:
+                if piece != 0 and piece.color == color:
+                    pieces.append(piece)
+        return pieces
