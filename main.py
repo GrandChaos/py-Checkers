@@ -1,4 +1,3 @@
-import sys
 import pygame
 
 from checkers.constants import WIDTH, HEIGHT, SQUARE_SIZE, CAPTION, WHITE
@@ -18,10 +17,12 @@ def get_row_col_from_mouse(pos):
     col = x // SQUARE_SIZE
     return row, col
 
+
 def draw_text(screen, text):
     font = pygame.font.SysFont("Arial", 25, True, False)
     text_object = font.render(text, True, pygame.Color('Red'))
-    text_location = pygame.Rect(0, 0, WIDTH, HEIGHT).move(WIDTH/2 - text_object.get_width()/2, HEIGHT/2 - text_object.get_height()/2)
+    text_location = pygame.Rect(0, 0, WIDTH, HEIGHT).move(WIDTH / 2 - text_object.get_width() / 2,
+                                                          HEIGHT / 2 - text_object.get_height() / 2)
     screen.blit(text_object, text_location)
     text_object = font.render(text, True, pygame.Color("Blue"))
     screen.blit(text_object, text_location.move(2, 2))
@@ -54,7 +55,7 @@ def main():
             else:
                 draw_text(WIN, 'BLACK WINS')
             begin = False
-            pygame.time.delay(1000)
+            pygame.time.delay(2000)
             game.update()
             game = Game(WIN)
 
@@ -79,8 +80,9 @@ def main():
 
             if begin and event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_r:
-                    begin = True
+                    begin = False
                     game = Game(WIN)
+                    game.update()
 
         if begin:
             game.update()
