@@ -7,6 +7,7 @@ from minimax_algorithm.algorithm import minimax
 
 FPS = 60
 
+pygame.init()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption(CAPTION % "Black")
 
@@ -17,37 +18,72 @@ def get_row_col_from_mouse(pos):
     col = x // SQUARE_SIZE
     return row, col
 
+def draw_text(screen, text):
+    font = pygame.font.SysFont("Arial", 25, True, False)
+    text_object = font.render(text, True, pygame.Color('Red'))
+    text_location = pygame.Rect(0, 0, WIDTH, HEIGHT).move(WIDTH/2 - text_object.get_width()/2, HEIGHT/2 - text_object.get_height()/2)
+    screen.blit(text_object, text_location)
+    text_object = font.render(text, True, pygame.Color("Blue"))
+    screen.blit(text_object, text_location.move(2, 2))
+    pygame.display.update()
+
 
 def main():
-    run = True
     clock = pygame.time.Clock()
+    clock.tick(FPS)
     game = Game(WIN)
 
+    run = True
+    begin = False
     AI = True
-    depth = 2
+    depth = 3
+
+    game.update()
 
     while run:
-        clock.tick(FPS)
-
         if AI and game.turn == WHITE:
             value, new_board = minimax(game.get_board(), depth, WHITE, game)
             game.AI_move(new_board)
-            # pygame.time.delay(500)
+            pygame.time.delay(300)
 
-        if game.winner() != None:
-            print(f'Game winner: {game.winner()}')
-            run = False
+        if game.winner() is not None:
+            # print(f'Game winner: {game.winner()}')
+            game.update()
+            if game.winner() == WHITE:
+                draw_text(WIN, 'WHITE WINS')
+            else:
+                draw_text(WIN, 'BLACK WINS')
+            begin = False
+            pygame.time.delay(1000)
+            game.update()
+            game = Game(WIN)
 
         for event in pygame.event.get():
+            if not begin:
+                draw_text(WIN, 'press: 1 - two players, 2 - computer')
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_1:
+                        AI = False
+                        begin = True
+                    if event.key == pygame.K_2:
+                        AI = True
+                        begin = True
+
             if event.type == pygame.QUIT:
                 run = False
 
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            if begin and event.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
                 row, col = get_row_col_from_mouse(pos)
                 game.select(row, col)
 
-        game.update()
+            if begin and event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_r:
+                    begin = True
+                    game = Game(WIN)
+
+        if begin:
+            game.update()
 
     pygame.quit()
 
