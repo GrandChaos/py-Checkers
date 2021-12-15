@@ -14,6 +14,7 @@ def draw_squares(win):
 
 
 class Board:
+
     def __init__(self):
         self.board = []
         self.black_remaining = self.white_remaining = 12
@@ -85,7 +86,8 @@ class Board:
                 elif skipped:
                     moves[(r, left)] = last + skipped
                 else:
-                    moves[(r, left)] = last  # отслеживание последней прыгнутой фигуры в текущем новом действующем квадрате
+                    moves[(
+                        r, left)] = last  # отслеживание последней прыгнутой фигуры в текущем новом действующем квадрате
 
                 if last:  # Мы просто прыгнули на фишку соперника перед тем, как приземлиться на правильное поле?
                     # Проверить правильные ходы из текущего действительного поля
@@ -214,9 +216,4 @@ class Board:
                (self.white_kings * 0.25 - self.black_kings * 0.25)
 
     def get_all_pieces(self, color):
-        pieces = []
-        for row in self.board:
-            for piece in row:
-                if piece != 0 and piece.color == color:
-                    pieces.append(piece)
-        return pieces
+        return [piece for row in self.board for piece in row if piece != 0 and piece.color == color]

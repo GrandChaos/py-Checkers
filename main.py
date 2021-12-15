@@ -9,6 +9,7 @@ FPS = 60
 pygame.init()
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption(CAPTION % "Black")
+pygame.display.set_icon(pygame.image.load("assets/crown.png"))
 
 
 def get_row_col_from_mouse(pos):
@@ -19,7 +20,7 @@ def get_row_col_from_mouse(pos):
 
 
 def draw_text(screen, text):
-    font = pygame.font.SysFont("Arial", 27, True, False)
+    font = pygame.font.SysFont("Arial", SQUARE_SIZE//2, True, False)
     text_object = font.render(text, True, pygame.Color('Orange'))
     text_location = pygame.Rect(0, 0, WIDTH, HEIGHT).move(WIDTH / 2 - text_object.get_width() / 2,
                                                           HEIGHT / 2 - text_object.get_height() / 2)

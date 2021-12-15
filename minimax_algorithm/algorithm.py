@@ -4,7 +4,7 @@ from checkers.constants import BLACK, WHITE, GREEN, SQUARE_SIZE
 
 
 def minimax(position, depth, max_player, game):
-    if depth == 0 or position.winner() != None:
+    if depth == 0 or position.winner() is not None:
         return position.evaluate(), position
 
     if max_player:
